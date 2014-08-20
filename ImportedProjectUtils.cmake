@@ -30,12 +30,12 @@ endmacro (polysquare_import_utils_import_library)
 # pre-build stat generators like Ninja)
 #
 # TARGET: Target to create
-# LOCATION: Location of library to import
 # TYPE: Type of library (STATIC, SHARED)
+# LOCATION: Location of library to import
 # EXTERNAL_PROJECT: Name of external project that generates this library.
 macro (polysquare_import_utils_library_from_extproject TARGET
-                                                       LOCATION
                                                        TYPE
+                                                       LOCATION
                                                        EXTERNAL_PROJECT)
 
     # Also create a rule to "generate" the library on disk by running
@@ -121,7 +121,7 @@ function (polysquare_import_utils_get_library_location_from_variable LIBRARY
         set (INTERNAL_RESULT)
         polysquare_import_utils_get_library_location (${${LIBRARY}}
                                                       INTERNAL_RESULT)
-        set (${INTERNAL_RESULT} ${RESULT} PARENT_SCOPE)
+        set (${RESULT} ${INTERNAL_RESULT} PARENT_SCOPE)
 
     endif (DEFINED ${LIBRARY})
 

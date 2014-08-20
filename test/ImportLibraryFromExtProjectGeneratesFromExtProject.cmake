@@ -43,8 +43,8 @@ set (IMPORT_LIBRARY_LOCATION
 set (IMPORT_LIBRARY_TARGET
 	 imported_${EXTERNAL_PROJECT_LIB})
 polysquare_import_utils_library_from_extproject (${IMPORT_LIBRARY_TARGET}
-	                                             ${IMPORT_LIBRARY_LOCATION}
 	                                             STATIC
+	                                             ${IMPORT_LIBRARY_LOCATION}
 	                                             ${EXTERNAL_PROJECT_NAME})
 
 # Check if an ensure_build_of_imported_library target exists
