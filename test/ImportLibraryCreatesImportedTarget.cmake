@@ -5,8 +5,8 @@
 #
 # See LICENCE.md for Copyright information.
 
-include (${POLYSQUARE_IMPORT_UTILS_CMAKE_UNIT_DIRECTORY}/CMakeUnit.cmake)
-include (${POLYSQUARE_IMPORT_UTILS_CMAKE_DIRECTORY}/ImportedProjectUtils.cmake)
+include (CMakeUnit)
+include (ImportedProjectUtils)
 
 # We're not building this project, so we can import a bogus library
 set (LIBRARY_TARGET library_target)
