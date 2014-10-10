@@ -5,8 +5,8 @@
 #
 # See LICENCE.md for Copyright information.
 
-include (${POLYSQUARE_IMPORT_UTILS_CMAKE_UNIT_DIRECTORY}/CMakeUnit.cmake)
-include (${POLYSQUARE_IMPORT_UTILS_CMAKE_DIRECTORY}/ImportedProjectUtils.cmake)
+include (CMakeUnit)
+include (ImportedProjectUtils)
 
 set (VARIABLE "VARIABLE")
 set (VALUE "VALUE")
