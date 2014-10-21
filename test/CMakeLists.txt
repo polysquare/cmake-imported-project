@@ -49,6 +49,8 @@ add_cmake_test (ImportLibraryCreatesImportedTarget)
 add_cmake_test (GetLibraryLocationForLibraryPath)
 add_cmake_test (GetLibraryLocationForLibraryTarget)
 add_cmake_test (AppendCacheDefinition)
+add_cmake_test (AppendTypedCacheDefinition)
+add_cmake_test (ForwardCacheNamespaces)
 
 add_cmake_build_test (ImportLibraryFromExtProjectGeneratesFromExtProject
                       ImportLibraryFromExtProjectGeneratesFromExtProjectVerify)
