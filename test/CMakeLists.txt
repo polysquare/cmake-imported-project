@@ -22,28 +22,16 @@ get_filename_component (POLYSQUARE_IMPORT_UTILS_CMAKE_DIRECTORY
 set (CMAKE_UNIT_DIRECTORY
      ${POLYSQUARE_IMPORT_UTILS_CMAKE_DIRECTORY}/cmake-unit)
 
-# Put our directories into the cache
-set (POLYSQUARE_IMPORT_UTILS_CMAKE_INITIAL_CACHE_CONTENTS
-     "set (POLYSQUARE_IMPORT_UTILS_CMAKE_GENERATOR\n"
-     "     ${CMAKE_GENERATOR}\n"
-     "     CACHE STRING \"\" FORCE)\n")
-
 set (CMAKE_MODULE_PATH
      ${CMAKE_UNIT_DIRECTORY}
      ${POLYSQUARE_IMPORT_UTILS_CMAKE_DIRECTORY}
      ${CMAKE_MODULE_PATH})
 
-foreach (PATH ${CMAKE_MODULE_PATH})
-     set (POLYSQUARE_IMPORT_UTILS_CMAKE_INITIAL_CACHE_CONTENTS
-          "${POLYSQUARE_IMPORT_UTILS_CMAKE_INITIAL_CACHE_CONTENTS}\n"
-          "set (CMAKE_MODULE_PATH ${PATH} \${CMAKE_MODULE_PATH}\n"
-          "     CACHE STRING \"\" FORCE)\n")
-endforeach ()
-
 include (CMakeUnitRunner)
 
-bootstrap_cmake_unit (INITIAL_CACHE_CONTENTS
-                      POLYSQUARE_IMPORT_UTILS_CMAKE_INITIAL_CACHE_CONTENTS)
+# Put our directories into the cache
+bootstrap_cmake_unit (VARIABLES CMAKE_GENERATOR
+                                CMAKE_MODULE_PATH)
 
 add_cmake_test (ImportLibraryCreatesImportedTarget)
 add_cmake_test (GetLibraryLocationForLibraryPath)
