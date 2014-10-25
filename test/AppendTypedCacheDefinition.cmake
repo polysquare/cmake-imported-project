@@ -1,7 +1,7 @@
 # /tests/AppendTypedCacheDefinition.cmake
 #
 # Checks that when appending a BOOL definition, we get the format
-# "-DVARIABLE:BOOL=VALUE"
+# "set (${VARIABLE} \"${VALUE}\" CACHE BOOL \"\" FORCE)"
 #
 # See LICENCE.md for Copyright information.
 
@@ -13,9 +13,9 @@ set (VALUE "VALUE")
 set (CACHE_LINES)
 
 polysquare_import_utils_append_typed_cache_definition (${VARIABLE}
-	                                                   ${VALUE}
+                                                       ${VALUE}
                                                        BOOL
-	                                                   CACHE_LINES)
+                                                       CACHE_LINES)
 
-assert_variable_is (${CACHE_LINES} STRING EQUAL
-	                "-D${VARIABLE}:BOOL=${VALUE}")
+assert_variable_is (CACHE_LINES STRING EQUAL
+                    "\nset (${VARIABLE} \"${VALUE}\" CACHE BOOL \"\" FORCE)")

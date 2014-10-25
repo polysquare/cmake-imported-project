@@ -1,7 +1,8 @@
 # /tests/ForwardCacheNamespaces.cmake
 #
-# Checks that when appending a definition, we get the format
-# "-DVARIABLE:string=VALUE"
+# Checks that when forwarding a namespace, we get all variables in that
+# namespace in the format of:
+# "set (${VARIABLE} \"${VALUE}\" CACHE STRING \"\" FORCE)"
 #
 # See LICENCE.md for Copyright information.
 
@@ -11,11 +12,14 @@ include (ImportedProjectUtils)
 set (NAMESPACE_CACHE_VAR_ONE "ONE" CACHE STRING "Cache var one" FORCE)
 set (NAMESPACE_CACHE_VAR_TWO "TWO" CACHE STRING "Cache var one" FORCE)
 
-set (CACHE_LINES)
+set (CACHE_FILE ${CMAKE_CURRENT_BINARY_DIR}/CacheFile.cmake)
+polysquare_forward_cache_namespaces_to_file (${CACHE_FILE} NAMESPACES NAMESPACE)
 
-polysquare_forward_cache_namespaces (CACHE_LINES NAMESPACES NAMESPACE)
+file (READ ${CACHE_FILE} CACHE_LINES)
 
-assert_list_contains_value (CACHE_LINES STRING EQUAL
-	                        "-DNAMESPACE_CACHE_VAR_ONE:STRING=ONE")
-assert_list_contains_value (CACHE_LINES STRING EQUAL
-	                        "-DNAMESPACE_CACHE_VAR_TWO:STRING=TWO")
+set (EXPECTED_CACHE_LINES
+     "\nset (NAMESPACE_CACHE_VAR_ONE \"ONE\" CACHE STRING \"\" FORCE)"
+     "\nset (NAMESPACE_CACHE_VAR_TWO \"TWO\" CACHE STRING \"\" FORCE)")
+string (REPLACE ";" "" EXPECTED_CACHE_LINES "${EXPECTED_CACHE_LINES}")
+
+assert_variable_is (CACHE_LINES STRING EQUAL "${EXPECTED_CACHE_LINES}")
