@@ -1,4 +1,4 @@
-# /tests/ImportLibraryFromExtProjectGeneratesFromExtProjectVerify
+# /tests/ImportIncludeDirFromImportedExternalProjectVerify.cmake
 #
 # Check to make sure that the external project was run
 #
@@ -8,4 +8,4 @@ include (CMakeUnit)
 set (BUILD_OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/BUILD.output)
 
 assert_file_has_line_matching (${BUILD_OUTPUT}
-	                           "^.*library.c.*$")
+	                           "^.*-I.*external/include.*$")

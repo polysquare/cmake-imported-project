@@ -1,7 +1,7 @@
-# /tests/ImportLibraryCreatesImportedTarget.cmake
+# /tests/ImportLibrarySetsVariableLocationSuffix.cmake
 #
-# Checks that a new imported target is created when we import
-# a known library
+# Checks that a variable called IMPORTED_LIBRARY_LOCATION
+# is created and it has the value of our LIBRARY_LOCATION
 #
 # See LICENCE.md for Copyright information.
 
@@ -16,4 +16,4 @@ polysquare_import_utils_import_library (IMPORTED_LIBRARY
                                         STATIC
                                         ${LIBRARY_LOCATION})
 
-assert_target_exists (${LIBRARY_TARGET})
+assert_variable_is (IMPORTED_LIBRARY_LOCATION STRING EQUAL ${LIBRARY_LOCATION})
