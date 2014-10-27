@@ -47,11 +47,11 @@ add_cmake_test (AssignTwoPairsInPairList)
 add_cmake_test (AssignZeroPairsInPairList)
 add_cmake_test (ReturnsListOfVars)
 
-add_cmake_test (ImportedExternalProjectRunsDownloadStep)
-add_cmake_test (ImportedExternalProjectRunsConfigureStep)
-
 add_cmake_test (ImportLibraryLocationFromImportedExternalProject)
-
+add_cmake_build_test (ImportedExternalProjectRunsDownloadStep
+                      ImportedExternalProjectRunsDownloadStepVerify)
+add_cmake_build_test (ImportedExternalProjectRunsConfigureStep
+                      ImportedExternalProjectRunsConfigureStepVerify)
 add_cmake_build_test (ErrorOnUnevenPairs
                       ErrorOnUnevenPairsVerify
                       ALLOW_CONFIGURE_FAIL)
