@@ -334,7 +334,8 @@ function (_polysquare_exec_and_check_success NAME)
         file (READ ${LOG_PREFIX}Error.txt ERROR)
         message ("${OUTPUT}")
         message ("${ERROR}")
-        message (FATAL_ERROR "${NAME} failed with ${RESULT}")
+        message (FATAL_ERROR "${NAME} (${EXEC_AND_CHECK_SUCCESS_COMMAND})"
+                             " failed with ${RESULT}")
 
     endif (NOT RESULT EQUAL 0)
 
@@ -407,8 +408,8 @@ function (_polysquare_create_metaproject_from_extproject PROJECT_NAME
         # A script which will append an export () command to a file
         set (METAPROJECT_APPEND_EXPORT_SCRIPT_CONTENTS
              "file (APPEND ${APPEND_TO_FILE}\n"
-             "      \"export (TARGETS ${EXPORTED}\\n\"\n"
-             "      \"        FILE ${EXPORTS}.cmake)\")\n")
+             "      \"\\nexport (TARGETS ${EXPORTED}\\n\"\n"
+             "      \"           FILE ${EXPORTS}.cmake)\\n\")\n")
         string (REPLACE ";" "" METAPROJECT_APPEND_EXPORT_SCRIPT_CONTENTS
                         "${METAPROJECT_APPEND_EXPORT_SCRIPT_CONTENTS}")
         set (METAPROJECT_APPEND_EXPORTS_SCRIPT
@@ -581,17 +582,20 @@ function (polysquare_import_external_project PROJECT_NAME EXPORTS)
     # and EXTERNAL_PROJECT_BINARY_DIR. If the caller specifies SOURCE_DIR or
     # BINARY_DIR then ExternalProject_Add will just use those, so we need to
     # make sure that we use them too.
-    set (EXTERNAL_PROJECT_ADD_MULTIVAR_ARGS SOURCE_DIR BINARY_DIR STAMP_DIR)
-    cmake_parse_arguments (EXTERNAL_PROJECT_ADD
-                           ""
-                           ""
-                           "${EXTERNAL_PROJECT_ADD_MULTIVAR_ARGS}"
-                           ${IMPORT_PROJECT_OPTIONS})
-    foreach (ARG ${EXTERNAL_PROJECT_ADD_MULTIVAR_ARGS})
+    set (CAPTURE_EP_ARGS SOURCE_DIR BINARY_DIR STAMP_DIR)
 
-        if (EXTERNAL_PROJECT_ADD_${ARG})
+    foreach (ARG ${IMPORT_PROJECT_OPTIONS})
 
-            set (EXTERNAL_PROJECT_${ARG} ${EXTERNAL_PROJECT_ADD_${ARG}})
+        # Find the current argument as part of OPTIONS in CAPTURE_EP_ARGS -
+        # if found, then set EXTERNAL_PROJECT_${ARG} to index + 1
+        list (FIND CAPTURE_EP_ARGS "${ARG}" FOUND_IN_CAPTURE_EP_ARGS)
+
+        if (NOT FOUND_IN_CAPTURE_EP_ARGS EQUAL -1)
+
+            list (FIND IMPORT_PROJECT_OPTIONS ${ARG} INDEX)
+            math (EXPR VALUE_INDEX "${INDEX} + 1")
+            list (GET IMPORT_PROJECT_OPTIONS ${VALUE_INDEX} ARG_VALUE)
+            set (EXTERNAL_PROJECT_${ARG} ${ARG_VALUE})
 
             if (NOT "${ARG}" STREQUAL "SOURCE_DIR")
 
@@ -604,7 +608,7 @@ function (polysquare_import_external_project PROJECT_NAME EXPORTS)
 
             endif (NOT "${ARG}" STREQUAL "SOURCE_DIR")
 
-        endif (EXTERNAL_PROJECT_ADD_${ARG})
+        endif (NOT FOUND_IN_CAPTURE_EP_ARGS EQUAL -1)
 
     endforeach ()
 
