@@ -49,8 +49,7 @@ function (psq_test_append_cache_definition)
 
     endfunction ()
 
-    cmake_unit_configure_test (INVOKE_CONFIGURE OPTIONS LANGUAGES C CXX
-                               CONFIGURE COMMAND psq_configure)
+    cmake_unit_configure_config_only_test (CONFIGURE COMMAND psq_configure)
 
 endfunction ()
 
@@ -74,8 +73,7 @@ function (psq_test_append_typed_cache_definition)
 
     endfunction ()
 
-    cmake_unit_configure_test (INVOKE_CONFIGURE OPTIONS LANGUAGES C CXX
-                               CONFIGURE COMMAND psq_configure)
+    cmake_unit_configure_config_only_test (CONFIGURE COMMAND psq_configure)
 
 endfunction ()
 
@@ -92,8 +90,7 @@ function (psq_test_assign_one_pair_in_pair_list)
 
     endfunction ()
 
-    cmake_unit_configure_test (INVOKE_CONFIGURE OPTIONS LANGUAGES C CXX
-                               CONFIGURE COMMAND psq_configure)
+    cmake_unit_configure_config_only_test (CONFIGURE COMMAND psq_configure)
 
 endfunction ()
 
@@ -112,8 +109,7 @@ function (psq_test_assign_two_pairs_in_pair_list)
 
     endfunction ()
 
-    cmake_unit_configure_test (INVOKE_CONFIGURE OPTIONS LANGUAGES C CXX
-                               CONFIGURE COMMAND psq_configure)
+    cmake_unit_configure_config_only_test (CONFIGURE COMMAND psq_configure)
 
 endfunction ()
 
@@ -130,8 +126,7 @@ function (psq_test_assign_zero_pairs_in_pair_list)
 
     endfunction ()
 
-    cmake_unit_configure_test (INVOKE_CONFIGURE OPTIONS LANGUAGES C CXX
-                               CONFIGURE COMMAND psq_configure)
+    cmake_unit_configure_config_only_test (CONFIGURE COMMAND psq_configure)
 
 endfunction ()
 
@@ -260,8 +255,7 @@ function (psq_test_forward_cache_namespaces)
 
     endfunction ()
 
-    cmake_unit_configure_test (INVOKE_CONFIGURE OPTIONS LANGUAGES C CXX
-                               CONFIGURE COMMAND psq_configure)
+    cmake_unit_configure_config_only_test (CONFIGURE COMMAND psq_configure)
 
 endfunction ()
 
@@ -687,8 +681,7 @@ function (psq_test_returns_list_of_vars)
 
     endfunction ()
 
-    cmake_unit_configure_test (INVOKE_CONFIGURE OPTIONS LANGUAGES C CXX
-                               CONFIGURE COMMAND psq_configure)
+    cmake_unit_configure_config_only_test (CONFIGURE COMMAND psq_configure)
 
 endfunction ()
 
