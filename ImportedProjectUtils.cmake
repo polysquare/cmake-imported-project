@@ -18,7 +18,7 @@ cmake_include_guard (SET_MODULE_PATH)
 include ("smspillaz/cmake-header-language/DetermineHeaderLanguage")
 include (CMakeParseArguments)
 
-if (NOT CMAKE_SCRIPT_MODE_FILE )
+if (NOT CMAKE_SCRIPT_MODE_FILE)
     include (ExternalProject)
 endif ()
 
@@ -110,7 +110,7 @@ macro (psq_import_utils_append_typed_cache_definition COPT
     set (${CLINES}
          "${${CLINES}}\nset (${COPT} \"${VALUE}\" CACHE ${UTYPE} \"\" FORCE)")
 
-endmacro (psq_import_utils_append_typed_cache_definition)
+endmacro ()
 
 # psq_import_utils_append_cache_definition
 #
@@ -145,7 +145,7 @@ macro (psq_import_utils_append_cache_definition_variable CACHE_OPTION
         psq_import_utils_append_cache_definition (${CACHE_OPTION}
                                                   ${VALUE}
                                                   ${CACHE_LINES})
-    endif (DEFINED ${VALUE})
+    endif ()
 
 endmacro ()
 
@@ -182,7 +182,7 @@ function (psq_forward_cache_namespaces_to_file CACHE_FILE)
 
                 list (APPEND NAMESPACED_VARIABLES ${VAR})
 
-            endif (NS_POS EQUAL 0)
+            endif ()
 
         endforeach ()
 
@@ -207,9 +207,7 @@ function (psq_forward_cache_namespaces_to_file CACHE_FILE)
                                                             ${TYPE}
                                                             CACHE_DEFS)
 
-        endif (NOT CACHE_VARIABLE_TYPE STREQUAL "STATIC" AND
-               NOT CACHE_VARIABLE_TYPE STREQUAL "INTERNAL" AND
-               NOT CACHE_VARIABLE_TYPE STREQUAL "UNINITIALIZED")
+        endif ()
 
     endforeach ()
 
@@ -227,7 +225,7 @@ function (psq_assign_variables_in_list PAIRS_LIST VARIABLES_LIST_RETURN)
              PARENT_SCOPE)
         return ()
 
-    endif (NOT ${PAIRS_LIST})
+    endif ()
 
     list (LENGTH ${PAIRS_LIST} PAIRS_LIST_LENGTH)
     math (EXPR PAIRS_LIST_MODULO "${PAIRS_LIST_LENGTH} % 2")
@@ -236,7 +234,7 @@ function (psq_assign_variables_in_list PAIRS_LIST VARIABLES_LIST_RETURN)
 
         message (FATAL_ERROR "Length of ${PAIRS_LIST} must be even")
 
-    endif (NOT PAIRS_LIST_MODULO EQUAL 0)
+    endif ()
 
     math (EXPR PAIRS_LIST_MAXIMUM_COUNT "${PAIRS_LIST_LENGTH} - 1")
     foreach (PAIRS_LIST_INDEX RANGE 0 ${PAIRS_LIST_MAXIMUM_COUNT} 2)
@@ -275,13 +273,13 @@ function (psq_exec_and_check_success NAME)
 
         message (FATAL_ERROR "COMMAND must be set")
 
-    endif (NOT EXEC_AND_CHECK_SUCCESS_COMMAND)
+    endif ()
 
     if (NOT EXEC_AND_CHECK_SUCCESS_WORKING_DIRECTORY)
 
         message (FATAL_ERROR "WORKING_DIRECTORY must be set")
 
-    endif (NOT EXEC_AND_CHECK_SUCCESS_WORKING_DIRECTORY)
+    endif ()
 
 
     set (LOG_PREFIX
@@ -304,7 +302,7 @@ function (psq_exec_and_check_success NAME)
         message (FATAL_ERROR "${NAME} (${EXEC_AND_CHECK_SUCCESS_COMMAND})"
                              " failed with ${RESULT}")
 
-    endif (NOT RESULT EQUAL 0)
+    endif ()
 
 endfunction ()
 
@@ -403,7 +401,7 @@ function (psq_create_metaproject_from_extproject PROJECT_NAME
              "                          ${METAPROJECT_APPEND_EXPORTS_SCRIPT}\n"
              "                          LOG)\n")
 
-    endif (GENERATE_EXPORTS)
+    endif ()
 
     string (REPLACE ";"
                     ""
@@ -466,7 +464,7 @@ function (psq_run_metaproject METAPROJECT_BUILD_DIR
                              "which will automatically append the correct "
                              "command to the external project's CMakeLists.txt")
 
-    endif (NOT EXISTS ${EXTERNAL_PROJECT_EXPORTS})
+    endif ()
 
     set (${EXTERNAL_PROJECT_EXPORTS_RETURN}
          ${EXTERNAL_PROJECT_EXPORTS}
@@ -556,10 +554,10 @@ function (psq_import_external_project PROJECT_NAME EXPORTS)
     file (MAKE_DIRECTORY "${EXTERNAL_PROJECT_BINARY_DIR}")
     file (MAKE_DIRECTORY "${EXTERNAL_PROJECT_STAMP_DIR}")
 
-    # We need to be a little bit clever about setting EXTERNAL_PROJECT_SOURCE_DIR
-    # and EXTERNAL_PROJECT_BINARY_DIR. If the caller specifies SOURCE_DIR or
-    # BINARY_DIR then externalproject_add will just use those, so we need to
-    # make sure that we use them too.
+    # We need to be a little bit clever about setting
+    # EXTERNAL_PROJECT_SOURCE_DIR and EXTERNAL_PROJECT_BINARY_DIR. If the caller
+    # specifies SOURCE_DIR or BINARY_DIR then externalproject_add will just use
+    # those, so we need to make sure that we use them too.
     set (CAPTURE_EP_ARGS SOURCE_DIR BINARY_DIR STAMP_DIR)
 
     foreach (ARG ${IMPORT_PROJECT_OPTIONS})
@@ -584,9 +582,9 @@ function (psq_import_external_project PROJECT_NAME EXPORTS)
                 list (REMOVE_ITEM IMPORT_PROJECT_OPTIONS
                       "${EXTERNAL_PROJECT_${ARG}}")
 
-            endif (NOT "${ARG}" STREQUAL "SOURCE_DIR")
+            endif ()
 
-        endif (NOT FOUND_IN_CAPTURE_EP_ARGS EQUAL -1)
+        endif ()
 
     endforeach ()
 
@@ -609,11 +607,11 @@ function (psq_import_external_project PROJECT_NAME EXPORTS)
 
         set (GENERATE_EXPORTS ON)
 
-    else (IMPORT_PROJECT_GENERATE_EXPORTS)
+    else ()
 
         set (GENERATE_EXPORTS OFF)
 
-    endif (IMPORT_PROJECT_GENERATE_EXPORTS)
+    endif ()
 
     # Create meta-project to download and configure external project at
     # configure-time. The METAPROJECT_BUILD_DIR will be set on success.
