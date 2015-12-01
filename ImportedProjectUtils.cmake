@@ -422,10 +422,9 @@ function (psq_create_metaproject_from_extproject PROJECT_NAME
 
     endif ()
 
-    string (REPLACE ";"
-                    ""
-                    METAPROJECT_CMAKELISTS
-                    "${METAPROJECT_CMAKELISTS}")
+    string (REPLACE ";" ""
+            METAPROJECT_CMAKELISTS
+            "${METAPROJECT_CMAKELISTS}")
 
     file (MAKE_DIRECTORY ${METAPROJECT})
     file (MAKE_DIRECTORY ${METAPROJECT_BUILD})
@@ -535,7 +534,7 @@ endfunction ()
 # For instance:
 #
 # psq_import_external_project (Project project-exports
-#                                     NAMESPACES POLYSQUARE)
+#                              NAMESPACES POLYSQUARE)
 #
 # PROJECT_NAME : The name of the external project.
 # EXPORTS : The basename of the project's exports file.
