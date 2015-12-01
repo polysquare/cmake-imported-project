@@ -407,7 +407,7 @@ function (psq_create_metaproject_from_extproject PROJECT_NAME
         # run before the configure steps
         set (METAPROJECT_CMAKELISTS
              "${METAPROJECT_CMAKELISTS}\n"
-             "externalproject_add_Step (\"${PROJECT_NAME}\"\n"
+             "externalproject_add_step (\"${PROJECT_NAME}\"\n"
              "                          append_exports\n"
              "                          COMMENT\n"
              "                          \"Adding exports to ${PROJECT_NAME}\"\n"
