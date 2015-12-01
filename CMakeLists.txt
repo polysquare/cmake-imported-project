@@ -162,7 +162,9 @@ macro (_psq_create_external_project_helper)
          "library-exports.cmake")
     set (EXTERNAL_PROJECT_CMAKELISTS_TXT_CONTENT
          "project (external)\n"
+         "option (PROJECT_OPTION \"Documentation\" OFF)\n"
          "message (STATUS \"FORWARDED_VARIABLE is \${FORWARDED_VARIABLE}\")\n"
+         "message (STATUS \"PROJECT_OPTION is \${PROJECT_OPTION}\")\n"
          "cmake_minimum_required (VERSION ${CMAKE_MINIMUM_REQUIRED_VERSION})\n"
          "add_library (${EXTERNAL_PROJECT_LIB} STATIC\n"
          "             ${EXTERNAL_PROJECT_IMPORTED_LIBRARY_SOURCE})\n")
@@ -291,6 +293,46 @@ function (psq_test_forward_namespaces_to_imported_external_project)
         cmake_unit_assert_that (${EXTERNAL_PROJECT_META_CONFIGURE_OUTPUT}
                                 file_contents any_line matches_regex
                                 "^.*FORWARDED_VARIABLE.*forwarded_value.*$")
+
+    endfunction ()
+
+    cmake_unit_configure_test (INVOKE_CONFIGURE OPTIONS LANGUAGES C CXX
+                               CONFIGURE COMMAND psq_configure
+                               VERIFY COMMAND psq_verify)
+endfunction ()
+
+# Tests that we can pass options to external projects
+function (psq_test_pass_options_to_to_imported_external_project)
+
+    cmake_unit_get_dirs (BINARY_DIR SOURCE_DIR)
+
+    function (psq_configure)
+
+        _psq_create_external_project_helper ()
+        psq_import_external_project (${EXTERNAL_PROJECT_NAME}
+                                     library-exports
+                                     OPTIONS
+                                     CMAKE_ARGS
+                                     -DPROJECT_OPTION=ON
+                                     SOURCE_DIR
+                                     "${EXTERNAL_PROJECT_DIRECTORY}")
+        add_custom_target (on_all ALL)
+        add_dependencies (on_all ${EXTERNAL_PROJECT_NAME})
+
+    endfunction ()
+
+    function (psq_verify)
+
+        set (EXTERNAL_PROJECT_NAME ExternalProject)
+        set (EXTERNAL_PROJECT_ROOT "${BINARY_DIR}/${EXTERNAL_PROJECT_NAME}")
+        set (EXTERNAL_PROJECT_META
+             "${EXTERNAL_PROJECT_ROOT}/${EXTERNAL_PROJECT_NAME}-Meta")
+        set (EXTERNAL_PROJECT_META_CONFIGURE_OUTPUT
+             "${EXTERNAL_PROJECT_META}/build/BuildMetaProjectOutput.txt")
+        cmake_unit_get_log_for (INVOKE_CONFIGURE OUTPUT CONFIGURE_OUTPUT)
+        cmake_unit_assert_that (${EXTERNAL_PROJECT_META_CONFIGURE_OUTPUT}
+                                file_contents any_line matches_regex
+                                "^.*PROJECT_OPTION.*ON.*$")
 
     endfunction ()
 

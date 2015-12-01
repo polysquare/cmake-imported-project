@@ -331,6 +331,27 @@ function (psq_create_metaproject_from_extproject PROJECT_NAME
     set (METAPROJECT_BUILD "${METAPROJECT}/build")
     set (METAPROJECT_STAMP_DIR "${METAPROJECT}/configure-stamp")
 
+    # If the user passed any CMAKE_ARGS, insert our cache
+    # argument, otherwise insert CMAKE_ARGS into
+    # the end of CREATE_METAPROJECT_OPTIONS
+    list (FIND CREATE_METAPROJECT_OPTIONS "CMAKE_ARGS"
+          CREATE_METAPROJECT_CMAKE_ARGS_INDEX)
+
+    if ("${CREATE_METAPROJECT_CMAKE_ARGS_INDEX}" EQUAL "-1")
+
+        list (APPEND CREATE_METAPROJECT_OPTIONS
+              CMAKE_ARGS
+              "\"-C${INITIAL_CACHE}\"")
+    else ()
+
+        math (EXPR CREATE_METAPROJECT_CMAKE_ARGS_INSERT_INDEX
+              "${CREATE_METAPROJECT_CMAKE_ARGS_INDEX} + 2")
+        list (INSERT CREATE_METAPROJECT_OPTIONS
+              "${CREATE_METAPROJECT_CMAKE_ARGS_INDEX}"
+              "\"-C${INITIAL_CACHE}\"")
+
+    endif ()
+
     # Need to pass this as space separated later
     string (REPLACE ";" " " CREATE_METAPROJECT_OPTIONS
             "${CREATE_METAPROJECT_OPTIONS}")
@@ -350,8 +371,6 @@ function (psq_create_metaproject_from_extproject PROJECT_NAME
          "                     \"${METAPROJECT_STAMP_DIR}\"\n"
          "                     BUILD_COMMAND \"\"\n"
          "                     INSTALL_COMMAND \"\"\n"
-         "                     CMAKE_ARGS\n"
-         "                     \"-C${INITIAL_CACHE}\"\n"
          "                     CMAKE_GENERATOR\n"
          "                     \"${GENERATOR}\")\n")
 
