@@ -331,6 +331,27 @@ function (psq_create_metaproject_from_extproject PROJECT_NAME
     set (METAPROJECT_BUILD "${METAPROJECT}/build")
     set (METAPROJECT_STAMP_DIR "${METAPROJECT}/configure-stamp")
 
+    # If the user passed any CMAKE_ARGS, insert our cache
+    # argument, otherwise insert CMAKE_ARGS into
+    # the end of CREATE_METAPROJECT_OPTIONS
+    list (FIND CREATE_METAPROJECT_OPTIONS "CMAKE_ARGS"
+          CREATE_METAPROJECT_CMAKE_ARGS_INDEX)
+
+    if ("${CREATE_METAPROJECT_CMAKE_ARGS_INDEX}" EQUAL "-1")
+
+        list (APPEND CREATE_METAPROJECT_OPTIONS
+              CMAKE_ARGS
+              "\"-C${INITIAL_CACHE}\"")
+    else ()
+
+        math (EXPR CREATE_METAPROJECT_CMAKE_ARGS_INSERT_INDEX
+              "${CREATE_METAPROJECT_CMAKE_ARGS_INDEX} + 2")
+        list (INSERT CREATE_METAPROJECT_OPTIONS
+              "${CREATE_METAPROJECT_CMAKE_ARGS_INDEX}"
+              "\"-C${INITIAL_CACHE}\"")
+
+    endif ()
+
     # Need to pass this as space separated later
     string (REPLACE ";" " " CREATE_METAPROJECT_OPTIONS
             "${CREATE_METAPROJECT_OPTIONS}")
@@ -341,24 +362,22 @@ function (psq_create_metaproject_from_extproject PROJECT_NAME
 
     set (METAPROJECT_CMAKELISTS
          "include (ExternalProject)\n"
-         "externalproject_add (${PROJECT_NAME}\n"
+         "externalproject_add (\"${PROJECT_NAME}\"\n"
          "                     ${CREATE_METAPROJECT_OPTIONS}\n"
-         "                     PREFIX ${EXTERNAL_PROJECT_ROOT}\n"
+         "                     PREFIX \"${EXTERNAL_PROJECT_ROOT}\"\n"
          "                     BINARY_DIR\n"
-         "                     ${BINARY_DIR}"
+         "                     \"${BINARY_DIR}\"\n"
          "                     STAMP_DIR\n"
-         "                     ${METAPROJECT_STAMP_DIR}\n"
+         "                     \"${METAPROJECT_STAMP_DIR}\"\n"
          "                     BUILD_COMMAND \"\"\n"
          "                     INSTALL_COMMAND \"\"\n"
-         "                     CMAKE_ARGS\n"
-         "                     -C${INITIAL_CACHE}\n"
          "                     CMAKE_GENERATOR\n"
-         "                     ${GENERATOR})\n")
+         "                     \"${GENERATOR}\")\n")
 
     if (GENERATE_EXPORTS)
 
         # File that we will be appending to
-        set (APPEND_TO_FILE "${SOURCE_DIR}/CMakeLists.txt")
+        set (APPEND_TO "${SOURCE_DIR}/CMakeLists.txt")
 
         # Make a list of targets to be exported
         foreach (VARIABLE ${CREATE_METAPROJECT_TARGETS})
@@ -372,15 +391,15 @@ function (psq_create_metaproject_from_extproject PROJECT_NAME
 
         # A script which will append an export () command to a file
         set (METAPROJECT_APPEND_EXPORT_SCRIPT_CONTENTS
-             "file (APPEND ${APPEND_TO_FILE}\n"
+             "file (APPEND \"${APPEND_TO}\"\n"
              "      \"\\nexport (TARGETS ${EXPORTED}\\n\"\n"
-             "      \"           FILE ${EXPORTS}.cmake)\\n\")\n")
+             "      \"           FILE \"${EXPORTS}.cmake\")\\n\")\n")
         string (REPLACE ";" ""
                 METAPROJECT_APPEND_EXPORT_SCRIPT_CONTENTS
                 "${METAPROJECT_APPEND_EXPORT_SCRIPT_CONTENTS}")
-        set (METAPROJECT_APPEND_EXPORTS_SCRIPT
+        set (METAPROJECT_APPEND_EXPORTS
              "${METAPROJECT}/AppendExportTargets.cmake")
-        file (WRITE ${METAPROJECT_APPEND_EXPORTS_SCRIPT}
+        file (WRITE ${METAPROJECT_APPEND_EXPORTS}
               "${METAPROJECT_APPEND_EXPORT_SCRIPT_CONTENTS}")
 
         # Add a new step to the meta-project to append an exports
@@ -388,25 +407,24 @@ function (psq_create_metaproject_from_extproject PROJECT_NAME
         # run before the configure steps
         set (METAPROJECT_CMAKELISTS
              "${METAPROJECT_CMAKELISTS}\n"
-             "externalproject_add_Step (${PROJECT_NAME}\n"
+             "externalproject_add_step (\"${PROJECT_NAME}\"\n"
              "                          append_exports\n"
              "                          COMMENT\n"
              "                          \"Adding exports to ${PROJECT_NAME}\"\n"
              "                          DEPENDEES download patch\n"
              "                          DEPENDERS configure\n"
              "                          COMMAND\n"
-             "                          ${CMAKE_COMMAND}\n"
-             "                          -DAPPEND_TO_FILE=${APPEND_TO_FILE}\n"
+             "                          \"${CMAKE_COMMAND}\"\n"
+             "                          \"-DAPPEND_TO_FILE=${APPEND_TO}\"\n"
              "                          -P\n"
-             "                          ${METAPROJECT_APPEND_EXPORTS_SCRIPT}\n"
+             "                          \"${METAPROJECT_APPEND_EXPORTS}\"\n"
              "                          LOG)\n")
 
     endif ()
 
-    string (REPLACE ";"
-                    ""
-                    METAPROJECT_CMAKELISTS
-                    "${METAPROJECT_CMAKELISTS}")
+    string (REPLACE ";" ""
+            METAPROJECT_CMAKELISTS
+            "${METAPROJECT_CMAKELISTS}")
 
     file (MAKE_DIRECTORY ${METAPROJECT})
     file (MAKE_DIRECTORY ${METAPROJECT_BUILD})
@@ -516,7 +534,7 @@ endfunction ()
 # For instance:
 #
 # psq_import_external_project (Project project-exports
-#                                     NAMESPACES POLYSQUARE)
+#                              NAMESPACES POLYSQUARE)
 #
 # PROJECT_NAME : The name of the external project.
 # EXPORTS : The basename of the project's exports file.
