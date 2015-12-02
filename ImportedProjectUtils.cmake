@@ -345,9 +345,9 @@ function (psq_create_metaproject_from_extproject PROJECT_NAME
     else ()
 
         math (EXPR CREATE_METAPROJECT_CMAKE_ARGS_INSERT_INDEX
-              "${CREATE_METAPROJECT_CMAKE_ARGS_INDEX} + 2")
+              "${CREATE_METAPROJECT_CMAKE_ARGS_INDEX} + 1")
         list (INSERT CREATE_METAPROJECT_OPTIONS
-              "${CREATE_METAPROJECT_CMAKE_ARGS_INDEX}"
+              "${CREATE_METAPROJECT_CMAKE_ARGS_INSERT_INDEX}"
               "\"-C${INITIAL_CACHE}\"")
 
     endif ()
