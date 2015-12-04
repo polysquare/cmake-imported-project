@@ -613,6 +613,12 @@ function (psq_import_external_project PROJECT_NAME EXPORTS)
     psq_assign_variables_in_list (IMPORT_PROJECT_INCLUDE_DIRS
                                   INCLUDE_DIR_VARIABLES)
 
+    # Make sure CMAKE_C_COMPILER, CMAKE_CXX_COMPILER and CMAKE_MODULE_PATH
+    # are in the cache
+    set (CMAKE_C_COMPILER "${CMAKE_C_COMPILER}" CACHE STRING "" FORCE)
+    set (CMAKE_CXX_COMPILER "${CMAKE_CXX_COMPILER}" CACHE STRING "" FORCE)
+    set (CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" CACHE STRING "" FORCE)
+
     # Forward cache namespaces. The CMAKE namespace will be forwarded by
     # default. This ensures that all subprojects are built with the
     # same builder, compiler flags, etc.
