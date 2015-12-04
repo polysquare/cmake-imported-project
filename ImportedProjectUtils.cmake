@@ -341,20 +341,20 @@ function (psq_create_metaproject_from_extproject PROJECT_NAME
 
         list (APPEND CREATE_METAPROJECT_OPTIONS
               CMAKE_ARGS
-              "\"-C${INITIAL_CACHE}\"")
+              "-C${INITIAL_CACHE}")
     else ()
 
         math (EXPR CREATE_METAPROJECT_CMAKE_ARGS_INSERT_INDEX
               "${CREATE_METAPROJECT_CMAKE_ARGS_INDEX} + 1")
         list (INSERT CREATE_METAPROJECT_OPTIONS
               "${CREATE_METAPROJECT_CMAKE_ARGS_INSERT_INDEX}"
-              "\"-C${INITIAL_CACHE}\"")
+              "-C${INITIAL_CACHE}")
 
     endif ()
 
     # Need to pass this as space separated later
-    string (REPLACE ";" " " CREATE_METAPROJECT_OPTIONS
-            "${CREATE_METAPROJECT_OPTIONS}")
+    cmake_spacify_list (CREATE_METAPROJECT_OPTIONS
+                        LIST ${CREATE_METAPROJECT_OPTIONS})
 
     # Escape spaces in the generator so that they aren't turned into list
     # separators when passing them to add_custom_command
@@ -393,7 +393,7 @@ function (psq_create_metaproject_from_extproject PROJECT_NAME
         set (METAPROJECT_APPEND_EXPORT_SCRIPT_CONTENTS
              "file (APPEND \"${APPEND_TO}\"\n"
              "      \"\\nexport (TARGETS ${EXPORTED}\\n\"\n"
-             "      \"           FILE \"${EXPORTS}.cmake\")\\n\")\n")
+             "      \"           FILE \\\"${EXPORTS}.cmake\\\")\\n\")\n")
         string (REPLACE ";" ""
                 METAPROJECT_APPEND_EXPORT_SCRIPT_CONTENTS
                 "${METAPROJECT_APPEND_EXPORT_SCRIPT_CONTENTS}")
@@ -445,8 +445,8 @@ function (psq_run_metaproject METAPROJECT_BUILD_DIR
                                 COMMAND
                                 "${CMAKE_COMMAND}"
                                 ..
-                                -C${INITIAL_CACHE}
-                                -G${CMAKE_GENERATOR}
+                                "-C${INITIAL_CACHE}"
+                                "-G${CMAKE_GENERATOR}"
                                 WORKING_DIRECTORY
                                 "${METAPROJECT_BUILD_DIR}")
 
@@ -612,6 +612,12 @@ function (psq_import_external_project PROJECT_NAME EXPORTS)
                                   TARGET_VARIABLES)
     psq_assign_variables_in_list (IMPORT_PROJECT_INCLUDE_DIRS
                                   INCLUDE_DIR_VARIABLES)
+
+    # Make sure CMAKE_C_COMPILER, CMAKE_CXX_COMPILER and CMAKE_MODULE_PATH
+    # are in the cache
+    set (CMAKE_C_COMPILER "${CMAKE_C_COMPILER}" CACHE STRING "" FORCE)
+    set (CMAKE_CXX_COMPILER "${CMAKE_CXX_COMPILER}" CACHE STRING "" FORCE)
+    set (CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" CACHE STRING "" FORCE)
 
     # Forward cache namespaces. The CMAKE namespace will be forwarded by
     # default. This ensures that all subprojects are built with the
