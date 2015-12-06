@@ -39,9 +39,9 @@ function (psq_test_append_cache_definition)
         set (VARIABLE "VARIABLE")
         set (VALUE "VALUE")
         set (CACHE_LINES)
-        psq_import_utils_append_cache_definition_variable (${VARIABLE}
-                                                           ${VALUE}
-                                                           CACHE_LINES)
+        psq_append_cache_definition_variable (${VARIABLE}
+                                              ${VALUE}
+                                              CACHE_LINES)
         set (EXPECTED_CACHE_LINES
              "\nset (${VARIABLE} \"${VALUE}\" CACHE STRING \"\" FORCE)")
         cmake_unit_assert_that (CACHE_LINES compare_as STRING EQUAL
@@ -62,10 +62,10 @@ function (psq_test_append_typed_cache_definition)
         set (VARIABLE "VARIABLE")
         set (VALUE "VALUE")
         set (CACHE_LINES)
-        psq_import_utils_append_typed_cache_definition (${VARIABLE}
-                                                        ${VALUE}
-                                                        BOOL
-                                                        CACHE_LINES)
+        psq_append_typed_cache_definition (${VARIABLE}
+                                           ${VALUE}
+                                           BOOL
+                                           CACHE_LINES)
         set (EXPECTED_CACHE_LINES
              "\nset (${VARIABLE} \"${VALUE}\" CACHE BOOL \"\" FORCE)")
         cmake_unit_assert_that (CACHE_LINES compare_as STRING EQUAL
