@@ -4,32 +4,40 @@ cache:
   directories:
   - container
 env:
-- CMAKE_GENERATOR="Unix Makefiles" CMAKE_VERSION="latest" DEPLOY="1"
-- CMAKE_GENERATOR="Ninja" CMAKE_VERSION="latest"
-- CMAKE_GENERATOR="Unix Makefiles" CMAKE_VERSION="3.0"
-- CMAKE_GENERATOR="Ninja" CMAKE_VERSION="3.0"
-- CMAKE_GENERATOR="Unix Makefiles" CMAKE_VERSION="latest" COVERAGE="--use-cmake-coverage"
+  matrix:
+  - CMAKE_GENERATOR="Unix Makefiles" CMAKE_VERSION="latest" DEPLOY="1"
+  - CMAKE_GENERATOR="Ninja" CMAKE_VERSION="latest"
+  - CMAKE_GENERATOR="Unix Makefiles" CMAKE_VERSION="3.0"
+  - CMAKE_GENERATOR="Ninja" CMAKE_VERSION="3.0"
+  - CMAKE_GENERATOR="Unix Makefiles" CMAKE_VERSION="latest" COVERAGE="--use-cmake-coverage"
+  global:
+  - secure: FcntBul8Xmgr48KJbJp2sxIsLB3OQJfAyyoHA7y09yyGz9YN55oVdU0XSrENR5ZWgJlGrlXRZIRyl345EQouypnS+iwP3Jhc16VtWzCSKMFMQt430LJmEMYqFH3P3oKo6vyYqem3DZJoezYLq3uQef35PXBSRUy8xBYWdIqnBbA=
+  - secure: KDvKpnG0srvSlUSiquOaYvBJLgnzLfJbIhyWSTUy4WwvNQ1HvGlognsNlWa1Z+wqXB9MjSnUrFWDIVKcDqwoUddVhVtqHArZ2kM9gqgBRnT+kSz5rEnp+nj8iynMqtmP6tHBzSmoxBm02+fWBlvkv84NMBWBkWy2yA5BMCV0vT0=
+  - secure: NK0qS89MwK+F5aPxyczZrB5WXif07seWIE3e3RraZP43Eu6AbBnlO720ZdHiy2zMZNzTi+CVTNFmQrIC56m0EOK2HksvVPtDjw+11D1Xhjcx6Z1cTCmqnzwobvYdfDVYQjaQYzF3iSgU39zeuPVitkvl1R6oDG/eJYbgyUEPG8Q=
+addons:
+  apt:
+    sources:
+    - deadsnakes
+    packages:
+    - python3.4-dev
 install:
 - eval $(curl -LSs --retry 100 --connect-timeout 3 public-travis-scripts.polysquare.org/bootstrap.py
-  | python /dev/stdin -d container -s setup/bii/setup.py -e bash -p /dev/stdout --cmake-version
-  ${CMAKE_VERSION})
+  | python /dev/stdin -d container -s setup/conan/setup.py -e bash -p /dev/stdout
+  --cmake-version ${CMAKE_VERSION})
 script:
-- polysquare_run check/bii/check.py ${COVERAGE} --cmake-namespace psq --generator
+- polysquare_run check/conan/check.py ${COVERAGE} --cmake-namespace psq --generator
   "${CMAKE_GENERATOR}" --block "smspillaz/cmake-imported-project"
 before_cache:
 - polysquare_cleanup
 after_success:
-- polysquare_run coverage/bii/coverage.py
+- polysquare_run coverage/cmake/coverage.py
 before_deploy:
-- polysquare_run deploy/bii/deploy.py
+- polysquare_run deploy/conan/before_deploy.py --package="cmake-imported-project"
 deploy:
-  provider: biicode
+  provider: script
   skip_cleanup: true
-  user:
-    secure: d1EhNwc9kFzwjTNglz8sHKtA4rAHDv48PIpooR8zq3DX7CyqXrGuowT7dv9QF1xp/wg4vAvyxjwVqkmbouwU5yHs0TrxA9nKSTaXmUiKsargzfAbY5gilymaqxcdMGHMYpYtbqLopDuCWec2tQiEdWYG3oxiptqmpRkyj7ZhwAY=
-  password:
-    secure: Cv5tgXwjXVGRzk2jIWT/ofPEuONNJtjYSeOTqgPF/c0ZK5zBe1jNstgMu9L/SQPBhDVPdShiIOlJkxIdGrhjrArFHwdzkcuAsELtw2oPCi+9AhudxWR54Zjt9M+48QQjvz06JutI1KGRrP7D34zUQMPI3dgvE20omEG28g83d3M=
+  script: "./travis-deploy"
   on:
     repo: polysquare/cmake-imported-project
     branch: master
-    condition: ${DEPLOY} = 1
+    condition: "${DEPLOY} = 1"
