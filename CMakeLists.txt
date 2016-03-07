@@ -3,31 +3,17 @@
 # Main entry point for ImportedProjectUtils tests.
 #
 # See /LICENCE.md for Copyright information
-
-if (NOT CMAKE_SCRIPT_MODE_FILE)
-
-    project (CMakeImportedProject NONE)
-    set (NEW_POLICIES CMP0025 CMP0056)
-
-    foreach (POLICY ${NEW_POLICIES})
-
-        if (POLICY ${POLICY})
-
-            cmake_policy (SET ${POLICY} NEW)
-
-        endif ()
-
-    endforeach ()
-
-endif ()
-
+include ("${CMAKE_CURRENT_LIST_DIR}/conanbuildinfo.cmake")
+set (CMAKE_MODULE_PATH
+     ${CONAN_CMAKE_MODULE_PATH}  # NOLINT:correctness/quotes
+     ${CMAKE_MODULE_PATH})  # NOLINT:correctness/quotes
 
 cmake_minimum_required (VERSION 2.8)
 
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR};${CMAKE_MODULE_PATH}")
 
-include ("smspillaz/cmake-unit/CMakeUnitRunner")
-include ("smspillaz/cmake-unit/CMakeUnit")
+include ("cmake/cmake-unit/CMakeUnitRunner")
+include ("cmake/cmake-unit/CMakeUnit")
 include (ImportedProjectUtils)
 
 # Checks that when appending a definition, we get the format
