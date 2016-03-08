@@ -12,6 +12,7 @@ class CMakeImportedProjectConan(ConanFile):
     requires = ("cmake-include-guard/master@smspillaz/cmake-include-guard",
                 "cmake-forward-cache/master@smspillaz/cmake-forward-cache",
                 "cmake-header-language/master@smspillaz/cmake-header-language",
+                "cmake-spacify-list/master@smspillaz/cmake-spacify-list",
                 "cmake-unit/master@smspillaz/cmake-unit")
     url = "http://github.com/polysquare/cmake-imported-project"
     license = "MIT"
