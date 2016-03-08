@@ -8,6 +8,7 @@ include ("cmake/cmake-include-guard/IncludeGuard")
 cmake_include_guard (SET_MODULE_PATH)
 include ("cmake/cmake-header-language/DetermineHeaderLanguage")
 include ("cmake/cmake-forward-cache/ForwardCacheVariables")
+include ("cmake/cmake-spacify-list/SpacifyList")
 include (CMakeParseArguments)
 
 if (NOT CMAKE_SCRIPT_MODE_FILE)
