@@ -17,6 +17,7 @@ my_target
 namespace
 namespaces
 OPTION
+POLYSQUARE
 polysquare
 subprojects
 SVN_REPOSITORY
