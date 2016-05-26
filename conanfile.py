@@ -12,10 +12,17 @@ class CMakeImportedProjectConan(ConanFile):
     requires = ("cmake-include-guard/master@smspillaz/cmake-include-guard",
                 "cmake-forward-cache/master@smspillaz/cmake-forward-cache",
                 "cmake-header-language/master@smspillaz/cmake-header-language",
-                "cmake-spacify-list/master@smspillaz/cmake-spacify-list",
-                "cmake-unit/master@smspillaz/cmake-unit")
+                "cmake-spacify-list/master@smspillaz/cmake-spacify-list")
     url = "http://github.com/polysquare/cmake-imported-project"
     license = "MIT"
+    options = {
+        "dev": [True, False]
+    }
+    default_options = "dev=False"
+
+    def requirements(self):
+        if self.options.dev:
+            self.requires("cmake-module-common/master@smspillaz/cmake-module-common")
 
     def source(self):
         zip_name = "cmake-imported-project.zip"

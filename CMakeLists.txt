@@ -12,8 +12,7 @@ cmake_minimum_required (VERSION 2.8)
 
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR};${CMAKE_MODULE_PATH}")
 
-include ("cmake/cmake-unit/CMakeUnitRunner")
-include ("cmake/cmake-unit/CMakeUnit")
+include ("cmake/cmake-module-common/Common" OPTIONAL)
 include (ImportedProjectUtils)
 
 # Checks that when appending a definition, we get the format
@@ -713,12 +712,17 @@ function (psq_test_returns_list_of_vars)
 
 endfunction ()
 
-cmake_unit_init (NAMESPACE "psq"
-                 COVERAGE_FILES
-                 "${CMAKE_CURRENT_LIST_DIR}/ImportedProjectUtils.cmake")
+set (CMAKE_FILES
+     "${CMAKE_CURRENT_LIST_DIR}/ImportedProjectUtils.cmake"
+     "${CMAKE_CURRENT_LIST_DIR}/CMakeLists.txt")
+set (MARKDOWN_FILES
+     "${CMAKE_CURRENT_LIST_DIR}/LICENCE.md"
+     "${CMAKE_CURRENT_LIST_DIR}/README.md")
 
-if (BIICODE)
+if (COMMAND cmake_module_add_common_targets)
 
-    add_bii_targets ()
+    cmake_module_add_common_targets (NAMESPACE "cmake"
+                                     CMAKE_FILES ${CMAKE_FILES}
+                                     DOCUMENTATION_FILES ${MARKDOWN_FILES})
 
 endif ()
