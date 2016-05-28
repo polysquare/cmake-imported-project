@@ -412,7 +412,7 @@ endfunction ()
 #
 function (psq_import_external_project PROJECT_NAME EXPORTS)
 
-    set (IMPORT_PROJECT_OPTION_ARGS GENERATE_EXPORTS)
+    set (IMPORT_PROJECT_OPTION_ARGS GENERATE_EXPORTS VERBOSE_BUILD)
     set (IMPORT_PROJECT_MULTIVAR_ARGS OPTIONS
                                       TARGETS
                                       INCLUDE_DIRS
@@ -531,6 +531,19 @@ function (psq_import_external_project PROJECT_NAME EXPORTS)
     # Now extract the target's EXPORTS file
     include (${EXTERNAL_PROJECT_EXPORTS})
 
+    set (BUILD_COMMAND "${CMAKE_COMMAND}"
+                       "--build"
+                       "${EXTERNAL_PROJECT_BINARY_DIR}")
+
+    if (IMPORT_PROJECT_VERBOSE_BUILD)
+        set (CMAKE_ARGS "-DCMAKE_VERBOSE_MAKEFILE=ON")
+        if ("${CMAKE_GENERATOR}" MATCHES "^.*Ninja.*$")
+            set (BUILD_COMMAND ${BUILD_COMMAND}
+                               "--"
+                               "-v")
+        endif ()
+    endif ()
+
     # Now add an external project which just builds whats in the downloaded
     # external project. The project will re-configure again, though
     # no cache variables will be passed so it will re-use the same cache
@@ -539,7 +552,9 @@ function (psq_import_external_project PROJECT_NAME EXPORTS)
                          STAMP_DIR "${EXTERNAL_PROJECT_STAMP_DIR}"
                          SOURCE_DIR "${EXTERNAL_PROJECT_SOURCE_DIR}"
                          BINARY_DIR "${EXTERNAL_PROJECT_BINARY_DIR}"
+                         CMAKE_ARGS ${CMAKE_ARGS}
                          INSTALL_COMMAND ""
+                         BUILD_COMMAND ${BUILD_COMMAND}
                          PREFIX ${EXTERNAL_PROJECT_ROOT}
                          LOG_DOWNLOAD 1
                          LOG_UPDATE 1
